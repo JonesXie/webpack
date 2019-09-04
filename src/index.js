@@ -1,4 +1,5 @@
-const hello = require('./hello');
-const world = require('./world');
-
-console.log(`${hello} ${world}`);
+const hello = require('./a.js')
+const world = require('./b.js')
+require("./a.css")
+require("./a.scss")
+console.log(hello.hello + " " + world.world)
