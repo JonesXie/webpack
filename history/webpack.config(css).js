@@ -8,8 +8,13 @@ module.exports = {
   optimization: { //优化项
     minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
   },
-  mode: "production",
+  mode: "development",
   entry: "./src/index.js",
+  devServer: {
+    port: 2048,
+    open: true,
+    contentBase: "./dist" //指定本地服务文件夹
+  },
   output: {
     filename: "bunlde.[hash:8].js",
     path: path.resolve(__dirname, 'dist'), // 当前目录下的dist
@@ -29,41 +34,7 @@ module.exports = {
     })
   ],
   module: {
-    rules: [
-      // //ESLINT
-      // {
-      //   test: /\.js$/,
-      //   use: {
-      //     loader: "eslint-loader",
-      //     options: {
-      //       enforce: 'pre'  //pre:之前 , post:之后
-      //     }
-      //   }
-      // },
-      //babel 转换
-      {
-        test: /\.js$/,
-        use: [{
-          loader: "babel-loader",
-          options: {
-            presets: ['@babel/preset-env'],
-            plugins: [
-              ["@babel/plugin-proposal-decorators", {
-                "legacy": true
-              }],
-              ["@babel/plugin-proposal-class-properties", {
-                "loose": true
-              }],
-              ['@babel/plugin-transform-runtime', {
-                corejs: 3
-              }]
-            ]
-          }
-        }],
-        include: path.resolve(__dirname, 'src'), // 包含路径
-        exclude: /node_modules/ // 排除路径
-      },
-      {
+    rules: [{
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader, // 使用 此插件loader替换 style-loader
