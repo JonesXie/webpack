@@ -1,6 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+
 module.exports = {
   mode: "production",
   entry: {
@@ -15,9 +15,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
       filename: "index.html",
-    }),
-    new CleanWebpackPlugin(), //里面可以放数组，清除的文件夹
+    })
   ],
+  devtool: 'source-map',
+  watch: true,
+  watchOptions: {
+    poll: 1000, // 每秒问我 1000 次
+    aggregateTimeout: 500, // 防抖
+    ignored: /node_modules/ //不需要监控的文件
+  },
   module: {
     rules: [{
       test: /\.js$/,

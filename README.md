@@ -1,6 +1,11 @@
 # webpack
 学习webpack文件配置
 
+## webpack 基本配置
+1. webpack && webpack-cli
+> 此安装包，安装webpack
+2. webpack-dev-server
+> 此安装包，安装webpack本地服务
 ## html 处理
 1. html-webpack-plugin 
 > 此插件将html文件输出在输出文件夹中
@@ -41,40 +46,12 @@ module.exports = {
 > 此loader 是 babel 转换的loader 
 3. @babel/preset-env
 > babel 预设环境
-4. @babel/plugin-proposal-class-properties
-> babel插件 , 对es 中 class 模块进行转换
-5. @babel/plugin-proposal-decorators
-> babel插件 , 装饰器
-```
-module: {
-  rules: [
-    //babel 转换
-    {
-      test: /\.js$/,
-      use: [{
-        loader: "babel-loader",
-        options: {
-          presets: ['@babel/preset-env'],
-          plugins: [
-            ["@babel/plugin-proposal-decorators", {
-              "legacy": true
-            }],
-            ["@babel/plugin-proposal-class-properties", {
-              "loose": true
-            }]
-          ]
-        }
-      }]
-    }
-  ]
-}
-```
-6. @babel/plugin-transform-runtime
+4. @babel/plugin-transform-runtime  依赖安装  @babel/runtime
 > babel插件 , ES代码装换时，可以重复使用Babel注入的帮助程序代码来节省代码。
 
 > 对于实例方法，例如"foobar".includes("foo")只能使用core-js
 
-7. @babel/runtime-corejs2 || @babel/runtime-corejs3 (生产环境)
+5. @babel/runtime-corejs2 || @babel/runtime-corejs3 (生产环境)
 > 补充对于实例方法的不支持
 ```
 ["@babel/plugin-transform-runtime", {corejs: 3}]
@@ -103,15 +80,43 @@ module: {
   exclude: /node_modules/ // 排除路径
 }
 ```
-8. @babel/runtime  (生产环境)
+6. @babel/runtime  (生产环境)
 > babel插件 , 在生产环境中，重复使用babel注入的帮助程序代码
 
-9. @babel/polyfill (生产环境)(babel7.4.0已废弃)(可使用corejs)
+7. @babel/polyfill (生产环境)(babel7.4.0已废弃)(可使用corejs)
 > babel插件 , 将实例方法进行解析，在babel7.4.0已废弃，可以使用第7条corejs
 ```
 npm install --save @babel/polyfill
 // 在index.js中引入即可
 require("@babel/polyfill")
+```
+8. @babel/plugin-proposal-class-properties
+> babel插件 , 对es 中 class 模块进行转换
+9. @babel/plugin-proposal-decorators
+> babel插件 , 装饰器
+```
+module: {
+  rules: [
+    //babel 转换
+    {
+      test: /\.js$/,
+      use: [{
+        loader: "babel-loader",
+        options: {
+          presets: ['@babel/preset-env'],
+          plugins: [
+            ["@babel/plugin-proposal-decorators", {
+              "legacy": true
+            }],
+            ["@babel/plugin-proposal-class-properties", {
+              "loose": true
+            }]
+          ]
+        }
+      }]
+    }
+  ]
+}
 ```
 10. eslint && eslint-loader 
 > loader , js校验。需要配置文件 " .eslintrc.json "
@@ -133,7 +138,6 @@ module: {
   ]
 }
 ```
-
 ## 全局变量引入(jquery为例)
 默认已经通过npm安装了jQuery
 
@@ -181,7 +185,6 @@ module.exports={
   }
 }
 ```
-
 ## 图片引入打包
 1. file-loader (大图片) && url-loader(图片转化base64)
 > loader , 对于引入的文件处理
@@ -273,4 +276,64 @@ rules: [
     }
   }
 ]
+```
+## devtool 调试代码
+1. source-map
+> 源码映射，单独生成一个sourcemap文件，报错时会标识当前报错的列和行
+```
+module.exports={
+  entry:'',
+  devtool:"source-map"
+}
+```
+2. eval-source-map
+> 源码映射，不会产生单独文件，报错时会标识当前报错的列和行
+```
+module.exports={
+  entry:'',
+  devtool:"eval-source-map"
+}
+```
+3. cheap-module-source-map
+> 源码映射，单独生成一个sourcemap文件，报错时不会标识当前报错的列和行
+```
+module.exports={
+  entry:'',
+  devtool:"cheap-module-source-map"
+}
+```
+4. cheap-module-eval-source-map
+> 源码映射，不会产生单独文件，报错时不会标识当前报错的列和行
+```
+module.exports={
+  entry:'',
+  devtool:"cheap-module-eval-source-map"
+}
+```
+## watch 实时监控打包
+1. watch
+> 将watch设置为 true时，将会实时监控文件
+2. watchOptions
+> 设置watch相关参数
+```
+module.exports={
+  entry:'',
+  watch:true,
+  watchOptions:{
+    poll:1000, // 每秒问我 1000 次
+    aggregateTimeout:500, // 防抖
+    ingored: /node_modules/  //不需要监控的文件
+  }
+}
+
+## webpack 小插件
+1. clean-webpack-plugin 
+> 在打包时将之前的dist文件清理掉    
+```
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+module.exports={
+  plugins: [
+    new CleanWebpackPlugin("./dist") //里面可以放数组，清除的文件夹
+  ]
+}
 ```
