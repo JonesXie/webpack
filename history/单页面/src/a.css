@@ -1,0 +1,9 @@
+@import "./b.css";
+
+body {
+  background-color: beige;
+}
+
+div {
+  transform: rotate(90deg)
+}
