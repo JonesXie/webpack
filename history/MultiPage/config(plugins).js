@@ -1,6 +1,11 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const {
+  CleanWebpackPlugin
+} = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require("copy-webpack-plugin")
+const webpack = require('webpack')
+
 module.exports = {
   mode: "production",
   entry: {
@@ -16,7 +21,18 @@ module.exports = {
       template: './index.html',
       filename: "index.html",
     }),
-    new CleanWebpackPlugin(), //里面可以放数组，清除的文件夹
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: ["**/*", path.resolve(__dirname, 'build')],
+    }),
+    new CopyWebpackPlugin([{
+      from: "./src/vender",
+      to: "vender"
+    }]),
+    new webpack.BannerPlugin('make 2019 by joannes'),
+    //设置环境变量
+    new webpack.DefinePlugin({
+      ENV: JSON.stringify('dev')
+    })
   ],
   module: {
     rules: [{
