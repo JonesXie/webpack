@@ -6,9 +6,11 @@
 > 此安装包，安装webpack
 2. webpack-dev-server
 > 此安装包，安装webpack本地服务
+
 ## html 处理
 1. html-webpack-plugin 
 > 此插件将html文件输出在输出文件夹中
+
 ## css 处理
 1. css-loader 
 > 此loader 对 css 中的 @import进行处理
@@ -39,6 +41,7 @@ module.exports = {
     minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
   },
   ```
+
 ## JS 处理
 1. @babel/core
 > 插件，将es语法转换为常用的js语法
@@ -138,6 +141,7 @@ module: {
   ]
 }
 ```
+
 ## 全局变量引入(jquery为例)
 默认已经通过npm安装了jQuery
 
@@ -185,6 +189,7 @@ module.exports={
   }
 }
 ```
+
 ## 图片引入打包
 1. file-loader (大图片) && url-loader(图片转化base64)
 > loader , 对于引入的文件处理
@@ -230,6 +235,7 @@ rules:[
   }
 ]
 ```
+
 ## 打包文件分类
 1. 设置全局路径 publicPath
 > 对于引入的资源(js,css,images等)都将会自动加上 publicPath
@@ -277,6 +283,7 @@ rules: [
   }
 ]
 ```
+
 ## devtool 调试代码
 1. source-map
 > 源码映射，单独生成一个sourcemap文件，报错时会标识当前报错的列和行
@@ -310,6 +317,7 @@ module.exports={
   devtool:"cheap-module-eval-source-map"
 }
 ```
+
 ## watch 实时监控打包
 1. watch
 > 将watch设置为 true时，将会实时监控文件
@@ -326,6 +334,7 @@ module.exports={
   }
 }
 ```
+
 ## webpack 小插件
 1. clean-webpack-plugin 
 > 在打包时将之前的文件夹清理掉  
@@ -375,6 +384,7 @@ module.exports={
   ]
 }
 ```
+
 ## webpack 跨域
 1. 使用proxy进行代理
 > 在本地服务中启用devServer,并配置跨域代理
@@ -413,6 +423,7 @@ devServer:{
   }
 }
 ```
+
 ## resolve 参数
 1. resolve.alias
 > 常用，文件名缩写
@@ -444,6 +455,7 @@ resolve.symlinks：是否解析符合链接（软连接，symlink）；
 resolve.plugins：添加解析插件，数组格式；
 resolve.cachePredicate：是否缓存，支持 boolean 和 function，function 传入一个带有 path 和 require 的对象，必须返回 boolean 值。
 ```
+
 ## 区分不同环境
 1. 设置环境变量， webpack.DefinePlugin
 ```
@@ -469,4 +481,157 @@ let base = require("./webpack.base.js")
 module.exports = smart(base, {
   mode: "production",
 })
+```
+
+## webpack 优化
+1. noParse  exclude  include
+> noParse 不解析,设置的文件  
+> exclude 排除,对设置的文件进行排除  
+> include 包括,只对设置的文件进行匹配
+```
+module.exports={
+  module:{
+    noParse:/jquery/
+    rules:[{
+      test:/\.js$/,
+      use:{
+        loader:"babel-loader",
+        options:{
+          presets:["@babel/preset-env"]
+        }
+      },
+      exclude:/node_modules/,
+      include:path.resovle("src")
+    }]
+  }
+}
+```
+2. IgnorePlugin 
+> webpack自带插件，设置忽略某项引入
+```
+  plugins: [
+    //忽略引入 ./locale  在moment中
+    new webpack.IgnorePlugin(/\.\/locale/,/moment/)
+  ],
+  // 可以手动引入所需的语言包
+  import "moment/locale/zh-cn";
+  moment.locale("zh-cn");
+```
+3. happypack 
+> happypack插件 ，多线程打包
+```
+const Happypack = require('happypack')
+module.exports = {
+  plugins: [
+    new Happypack({
+      id: 'js',
+      use: [{
+        loader: "babel-loader",
+        options: {
+          presets: ['@babel/preset-env'],
+          plugins: [
+            ["@babel/plugin-transform-runtime", {
+              corejs: 3
+            }]
+          ]
+        }
+      }]
+    })
+  ],
+  module: {
+    // css同样适用
+    rules: [{
+      test: /\.js$/,
+      use: "Happypack/loader?id=js",
+      exclude: /node_modules/
+    }]
+  }
+}
+```
+4. webpack内置优化 
+> 1、tree-shaking  
+> 使用 import 导入时，在打包时会自动去除没用的代码  
+> require导入是放在一个对象中的，且不会去除代码,在default中  
+> 2、scope-hosting 
+> 作用域提升，打包时将多余的变量进行转化  
+
+5. 代码分割
+> 使用optimization 中的 splitChunks  
+> [详细解释](https://www.imooc.com/read/29/article/277)
+```
+module.exports={
+  optimization: {
+    splitChunks: { //分割代码块
+      cacheGroups: { // 缓存组
+        common: { // 公共模块
+          chunks: "initial",
+          minSize: 0, //公用的大小
+          minChunks: 2, //被用到的次数
+        },
+        vendor: { // 公用引入模块
+          priority: 1, // 处理的优先级
+          test: /node_modules/, //正则，/node_modules/里被引用的
+          chunks: "initial",
+          minSize: 0, //公用的大小
+          minChunks: 2, //被用到的次数
+        }
+      }
+    }
+},
+}
+```
+6. @babel/plugin-syntax-dynamic-import 懒加载
+> babel插件，需要写在babel中
+```
+// index.js
+let button = document.createElement('button')
+button.innerHTML = "name"
+button.addEventListener('click', () => {
+  import('./loader').then((data) => {
+    console.log(data.default)
+  })
+})
+document.body.appendChild(button)
+
+//webpack.config.js
+module.exports={
+  module: {
+    rules: [{
+      test: /\.js$/,
+      use: {
+        loader: "babel-loader",
+        options: {
+          presets: ['@babel/preset-env'],
+          plugins: [
+            ["@babel/plugin-transform-runtime", {
+              corejs: 3
+            }],
+            //引入
+            ['@babel/plugin-syntax-dynamic-import']
+          ]
+        }
+      },
+      exclude: /node_modules/
+    }]
+  }
+}
+```
+7. 热更新  HotModuleReplacementPlugin
+> webpack自带插件, 需要在本地服务启动 hot:true  
+```
+module.exports={
+  devSever:{
+    hot:true
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ],
+}
+//index.js
+import str from "./source"
+if(module.hot){
+  module.hot.accept('./source',()=>{
+    console.log("文件更新了")
+  })
+}
 ```
