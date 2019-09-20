@@ -9,23 +9,107 @@
 
 ## html 处理
 1. html-webpack-plugin 
-> 此插件将html文件输出在输出文件夹中
+> 此插件将html文件输出在输出文件夹中  
+> 主要参数说明 , [具体解释](https://www.jianshu.com/p/08a60756ffda)
+```
+const HtmlWebpackPlugin = require("html-webpack-plugin ")
+module.exports={
+  plugins:[
+    new HtmlWebpackPlugin({
+     // html模板,可以是 html, jade, ejs, hbs等，必须安装对应的 loader
+      template:"./index.html" ,
+      filename: "index.html",
+            //生成一个icon图标
+      favicon: "./favicon.ico",
+      //hash值
+      hash: true,
+      // 使用的代码块，用于多文件打包
+      chunks:["home","other"],
+      //minify压缩
+      minify: {
+        //是否对大小写敏感，默认false
+        caseSensitive: true,
+
+        //是否简写boolean格式的属性如：disabled="disabled" 简写为disabled  默认false
+        collapseBooleanAttributes: true,
+
+        //是否去除空格，默认false
+        collapseWhitespace: true,
+
+        //是否压缩html里的css（使用clean-css进行的压缩） 默认值false；
+        minifyCSS: true,
+
+        //是否压缩html里的js（使用uglify-js进行的压缩）
+        minifyJS: true,
+
+        //Prevents the escaping of the values of attributes
+        preventAttributesEscaping: true,
+
+        //是否移除属性的引号 默认false
+        removeAttributeQuotes: true,
+
+        //是否移除注释 默认false
+        removeComments: true,
+
+        //从脚本和样式删除的注释 默认false
+        removeCommentsFromCDATA: true,
+
+        //是否删除空属性，默认false
+        removeEmptyAttributes: true,
+
+        //  若开启此项，生成的html中没有 body 和 head，html也未闭合
+        removeOptionalTags: false,
+
+        //删除多余的属性
+        removeRedundantAttributes: true,
+
+        //删除script的类型属性，在h5下面script的type默认值：text/javascript 默认值false
+        removeScriptTypeAttributes: true,
+
+        //删除style的类型属性， type="text/css" 同上
+        removeStyleLinkTypeAttributes: true,
+
+        //使用短的文档类型，默认false
+        useShortDoctype: true,
+      }
+    })
+  ]
+}
+```
 
 ## css 处理
 1. css-loader 
 > 此loader 对 css 中的 @import进行处理
-2. style-loader (可选)
-> 此loader 将css插入到html中
-2. mini-css-extract-plugin (可选)
-> 此插件将所有的css样式打包在一个文件中，通过 link引入。
+2. mini-css-extract-plugin (常用)
+> 插件,将所有的css样式打包在一个文件中，通过 link引入。  
 > 在loader 中使用 MiniCssExtractPlugin.loader
-3. node-sass && sass-loader 、less && less-loader、stylus && stylus-loader
-> 此loader 将scss/less/styl 进行 =>css 处理
+
+3. style-loader (可选)
+> 此loader 将css插入到html中  
+> 与  mini-css-extract-plugin 不能共用
 4. autoprefixer && postcss-loader 
-> 此插件和loader是自动给css样式添加浏览器前缀。
-> 需要 postcss.config.js 文件。
+> 此插件和loader是自动给css样式添加浏览器前缀。  
+> 1、在webpack.config.js中配置 引入 autoprefixer  
+> 2、在package.json文件中配置。
+> 3、或者在根目录创建 postcss.config.js 文件。  
+> 4、配置 package.json 中的“browserslist”来传递autoprefixer的参数。
 
 ```
+// package 内容
+{
+  ....
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
+
 // postcss.config.js 内容
 module.exports = {
   plugins: [
@@ -33,7 +117,42 @@ module.exports = {
   ]
 }
 ```
-5. optimize-css-assets-webpack-plugin
+案例：
+```
+const MiniCssExtractPlugin = require('mini-css-extract-plugin'); 
+
+module.exports={
+  plugins:[
+    new MiniCssExtractPlugin({
+      filename: "main.[hash:8].css",
+      // hash: true
+    })
+  ]
+  module:{
+    rules:[{
+      test:/\.css$/,
+      use:[
+        MiniCssExtractPlugin.loader,
+        "css-loader",
+        {
+          //也可以在package.json中引入autoprefixer插件
+          loader: "postcss-loader",
+          options: {
+            plugins: [require('autoprefixer')({
+              //传参，将覆盖package.json中的"browserslist"
+              //并不推荐这样写。应写在package.json中"browserslist"
+              overrideBrowserslist: ["last 2 version"]
+            })]
+          }
+        },
+      ]
+    }]
+  }
+}
+```
+5. node-sass && sass-loader 、less && less-loader、stylus && stylus-loader
+> 此loader 将scss/less/styl 进行 =>css 处理
+6. optimize-css-assets-webpack-plugin
 > 此插件是将css代码进行压缩。使用此插件，需要js插件进行js压缩。
 > 在optimization 中写。
 ```
@@ -191,7 +310,7 @@ module.exports={
 ```
 
 ## 图片引入打包
-1. file-loader (大图片) && url-loader(图片转化base64)
+1. file-loader (大图片,必须) && url-loader(图片转化base64)
 > loader , 对于引入的文件处理
 ```
 module.exports={
@@ -401,14 +520,16 @@ module.exports={
           "/api":""
         }
       },
-      //3.多个代理到一个
+    }，
+    //3.多个代理到一个
+    proxy:[
       {
         context: ["/api", "/pps", "/login"],
         target: 'http://192.168.1.54:8001',
         changeOrigin: true,
         secure: false
       }
-    }
+    ]
   }
 }
 ```
@@ -577,7 +698,7 @@ module.exports={
         }
       }
     }
-},
+  },
 }
 ```
 6. @babel/plugin-syntax-dynamic-import 懒加载
