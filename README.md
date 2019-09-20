@@ -10,7 +10,7 @@
 ## html 处理
 1. html-webpack-plugin 
 > 此插件将html文件输出在输出文件夹中  
-> 主要参数说明 , [具体解释](https://www.jianshu.com/p/08a60756ffda?_blank)
+> 主要参数说明 , [具体解释](https://www.jianshu.com/p/08a60756ffda)
 ```
 const HtmlWebpackPlugin = require("html-webpack-plugin ")
 module.exports={
@@ -243,7 +243,7 @@ module: {
 10. eslint && eslint-loader 
 > loader , js校验。需要配置文件 " .eslintrc.json "
 
-> 配置.eslintrc.json并下载：[https://eslint.org/demo](https://eslint.org/demo?_blank)。
+> 配置.eslintrc.json并下载：[https://eslint.org/demo](https://eslint.org/demo)。
 ```
 module: {
   rules: [
@@ -458,7 +458,7 @@ module.exports={
 1. clean-webpack-plugin 
 > 在打包时将之前的文件夹清理掉  
 
-> [clean-webpack-plugin升级踩坑](https://juejin.im/post/5d81ff29e51d456212049230?_blank)
+> [clean-webpack-plugin升级踩坑](https://juejin.im/post/5d81ff29e51d456212049230)
 
 ```
 const {CleanWebpackPlugin} = require('clean-webpack-plugin') // 新版需要进行解构
@@ -678,7 +678,7 @@ module.exports = {
 
 5. 代码分割
 > 使用optimization 中的 splitChunks  
-> [详细解释](https://www.imooc.com/read/29/article/277?_blank)
+> [详细解释](https://www.imooc.com/read/29/article/277)
 ```
 module.exports={
   optimization: {
