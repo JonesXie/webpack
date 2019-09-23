@@ -403,6 +403,47 @@ rules: [
 ]
 ```
 
+## webpack 多页面案例
+1. glob
+> 插件，匹配解析当前文档目录  
+```
+const glob = require('glob');
+
+let setMAP = () => {
+  const entry = {};
+  const HtmlWebpackPlugins = [];
+  //获取当前目录下匹配 "./src/*/index.js" 的文件目录
+  const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js"));
+  entryFiles.forEach(v => {
+    const Match = v.match(/src\/(.*)\/index\.js/);
+    const pageName = Match && Match[1];
+    entry[pageName] = v; //设置entry
+    //设置多个html插件
+    HtmlWebpackPlugins.push(
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, `./src/${pageName}/index.html`),
+        filename: `${pageName}/${pageName}.html`,
+        chunks: [pageName],
+        favicon: path.resolve(__dirname, "favicon.ico"), //生成一个icon图标
+      })
+    );
+  })
+  return {
+    entry,
+    HtmlWebpackPlugins
+  }
+}
+const {
+  entry,
+  HtmlWebpackPlugins
+} = setMAP();
+
+module.exports={
+  entry:entry,
+  plugins:[....].contact(HtmlWebpackPlugins)
+}
+```
+
 ## devtool 调试代码
 1. source-map
 > 源码映射，单独生成一个sourcemap文件，报错时会标识当前报错的列和行
