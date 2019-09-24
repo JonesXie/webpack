@@ -421,7 +421,7 @@ let setMAP = () => {
     //设置多个html插件
     HtmlWebpackPlugins.push(
       new HtmlWebpackPlugin({
-        template: path.join(__dirname, `./src/${pageName}/index.html`),
+        template: v.replace('index.js', 'index.html'),
         filename: `${pageName}/${pageName}.html`,
         chunks: [pageName],
         favicon: path.resolve(__dirname, "favicon.ico"), //生成一个icon图标
