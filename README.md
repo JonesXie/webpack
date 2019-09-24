@@ -243,7 +243,8 @@ module: {
 10. eslint && eslint-loader 
 > loader , js校验。需要配置文件 " .eslintrc.json "
 
-> 配置.eslintrc.json并下载：[https://eslint.org/demo](https://eslint.org/demo)。
+> 官网配置.eslintrc.json并下载：[https://eslint.org/demo](https://eslint.org/demo)。  
+> 腾讯 Alloy规则：[Github](https://github.com/AlloyTeam/eslint-config-alloy)
 ```
 module: {
   rules: [
@@ -717,7 +718,7 @@ module.exports = {
 > 2、scope-hosting 
 > 作用域提升，打包时将多余的变量进行转化  
 
-5. 代码分割
+5. 代码分割 splitChunks
 > 使用optimization 中的 splitChunks  
 > [详细解释](https://www.imooc.com/read/29/article/277)
 ```
@@ -742,7 +743,7 @@ module.exports={
   },
 }
 ```
-6. @babel/plugin-syntax-dynamic-import 懒加载
+6. @babel/plugin-syntax-dynamic-import  import按需懒加载
 > babel插件，需要写在babel中
 ```
 // index.js
