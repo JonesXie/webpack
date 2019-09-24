@@ -25,8 +25,8 @@ module.exports = {
       cleanOnceBeforeBuildPatterns: ["**/*", path.resolve(__dirname, 'build')],
     }),
     new CopyWebpackPlugin([{
-      from: "./src/vender",
-      to: "vender"
+      from: "./src/vendor",
+      to: "vendor"
     }]),
     new webpack.BannerPlugin('make 2019 by joannes'),
     //设置环境变量

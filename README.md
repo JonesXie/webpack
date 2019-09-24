@@ -527,8 +527,8 @@ module.exports={
     //里面放置数组，可以填写多个
     // 默认会放到output中指定的输出文件夹
     new CopyWebpackPlugin([{
-      from: "./src/vender",
-      to: "vender"
+      from: "./src/vendor",
+      to: "vendor"
     }])
   ]
 }

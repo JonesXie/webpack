@@ -62,8 +62,8 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([{
-      from: "./src/vender",
-      to: "vender"
+      from: "./src/vendor",
+      to: "vendor"
     }]),
     new webpack.BannerPlugin("make 2019 by joannes")
   ],

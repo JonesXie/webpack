@@ -74,8 +74,8 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([{
-      from: "./src/vender",
-      to: "static/vender"
+      from: "./src/vendor",
+      to: "static/vendor"
     }]),
     // new webpack.BannerPlugin("make 2019 by joannes")
   ].concat(HtmlWebpackPlugins),
