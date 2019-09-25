@@ -25,6 +25,8 @@ module.exports={
       hash: true,
       // 使用的代码块，用于多文件打包
       chunks:["home","other"],
+      //设置页面的title
+      title: 'webpackdemo'
       //minify压缩
       minify: {
         //是否对大小写敏感，默认false
@@ -77,9 +79,22 @@ module.exports={
 }
 ```
 
+2.使用模板引擎 ejs
+```
+暂未更新
+```
+
+3. 多页面处理
+> 次功能较为复杂，请看demo: [MultipleDemo](https://github.com/JoannesXie/webpack/blob/master/history/MultiDemo/webpack.config.js)
+
 ## css 处理
 1. css-loader 
 > 此loader 对 css 中的 @import进行处理
+```
+//js中内联处理
+import css from 'css-loader!./css/index.css';
+console.log(css);
+```
 2. mini-css-extract-plugin (常用)
 > 插件,将所有的css样式打包在一个文件中，通过 link引入。  
 > 在loader 中使用 MiniCssExtractPlugin.loader
@@ -168,7 +183,7 @@ module.exports={
 > 此loader 是 babel 转换的loader 
 3. @babel/preset-env
 > babel 预设环境
-4. @babel/plugin-transform-runtime  依赖安装  @babel/runtime
+4. @babel/plugin-transform-runtime  &&  @babel/runtime(生产环境)
 > babel插件 , ES代码装换时，可以重复使用Babel注入的帮助程序代码来节省代码。
 
 > 对于实例方法，例如"foobar".includes("foo")只能使用core-js
@@ -196,25 +211,28 @@ module.exports={
           corejs: 3
         }]
       ]
+    },
+    env: { //根据不同环境配置不同不同参数
+      production: {
+        "presets": ["@babel/preset-env"]
+      }
     }
   }],
   include: path.resolve(__dirname, 'src'), // 包含路径
   exclude: /node_modules/ // 排除路径
 }
 ```
-6. @babel/runtime  (生产环境)
-> babel插件 , 在生产环境中，重复使用babel注入的帮助程序代码
 
-7. @babel/polyfill (生产环境)(babel7.4.0已废弃)(可使用corejs)
+6. @babel/polyfill (生产环境)(babel7.4.0已废弃)(可使用corejs)
 > babel插件 , 将实例方法进行解析，在babel7.4.0已废弃，可以使用第7条corejs
 ```
 npm install --save @babel/polyfill
 // 在index.js中引入即可
 require("@babel/polyfill")
 ```
-8. @babel/plugin-proposal-class-properties
+7. @babel/plugin-proposal-class-properties
 > babel插件 , 对es 中 class 模块进行转换
-9. @babel/plugin-proposal-decorators
+8. @babel/plugin-proposal-decorators
 > babel插件 , 装饰器
 ```
 module: {
@@ -240,12 +258,26 @@ module: {
   ]
 }
 ```
-10. eslint && eslint-loader 
-> loader , js校验。需要配置文件 " .eslintrc.json "
+9. eslint && eslint-loader 
+>1、loader , js校验。需要配置文件 " .eslintrc.json "  
+>2、ESLint 的报错类型包括三种：off、warn和error，分别对应着：0、1、2  
 
-> 官网配置.eslintrc.json并下载：[https://eslint.org/demo](https://eslint.org/demo)。  
+> 配置.eslintrc.json：[https://eslint.org/demo](https://eslint.org/demo)。  
+> 规则说明：[中文](https://cn.eslint.org/docs/rules/)、[英文](https://eslint.org/docs/rules/)。  
 > 腾讯 Alloy规则：[Github](https://github.com/AlloyTeam/eslint-config-alloy)
 ```
+// .eslintrc.json
+{
+  "extends": ['alloy',], //使用自己安装的规则
+  'rules': { //自己配置规则
+      // 禁止 console，要用写 eslint disbale
+      'no-console': 2,
+      // 禁止 debugger，防止上线
+      'no-debugger': 2,
+  }
+}
+
+//webpack.config.js
 module: {
   rules: [
     //ESLINT
@@ -342,18 +374,53 @@ module.exports={
   document.body.appendChild(img)
 ```
 3. 使用css引入图片
-> 直接引入，因为css-loader会进行转换
+> 直接引入，因为css-loader会进行转换  
+> css中使用 alias配置的参数，需要加上 ~ 
 
 > background:url('./logo.jpg')  => background:url(rquire('./logo.jpg'))
-4. 使用html引入图片 html-withimg-loader
-> loader，将html中的图片进行转换
+4. 使用html引入图片 html-loader
+> loader，对html中的外部资源(图片等)进行转换  
+>html中使用 alias配置的参数，需要加上 ~ 
 ```
 rules:[
   {
     test:/\.html$/,
-    use:'html-withimg-loader'
+    use:'html-loader'
   }
 ]
+```
+> html和css中使用 alias配置的参数，需要加上 ~  
+```
+// webpack.config.js
+const path = require('path')
+module.exports={
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  }
+}
+//html 
+<img src="~@/img/large.png" alt="背景图" />
+//css
+.bg-img {
+    background: url(~@/img/small.png) no-repeat;
+}
+```
+
+## 其他资源处理
+1. 字体、富媒体
+> 对于字体、富媒体等静态资源，可以直接使用url-loader或者file-loader进行配置即可
+```
+{
+    // 文件解析
+    test: /\.(eot|woff|ttf|woff2|appcache|mp4|pdf)(\?|$)/,
+    loader: 'file-loader',
+    query: {
+        // 这么多文件，ext不同，所以需要使用[ext]
+        name: 'assets/[name].[hash:7].[ext]'
+    }
+},
 ```
 
 ## 打包文件分类

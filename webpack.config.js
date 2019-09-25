@@ -9,7 +9,7 @@ const {
   CleanWebpackPlugin
 } = require('clean-webpack-plugin')
 module.exports = {
-  mode: "development",
+  mode: "production",
   devServer: {
     open: true,
     hot: true,
@@ -47,6 +47,11 @@ module.exports = {
       }
     }
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
@@ -57,8 +62,7 @@ module.exports = {
       }
     }),
     new MiniCssExtractPlugin({
-      filename: "css/main.[hash:8].css", // 添加css/
-      // hash: true
+      filename: "css/main.[contenthash:8].css", // 添加css/
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([{
@@ -121,7 +125,7 @@ module.exports = {
       // html内文件
       {
         test: /\.html$/,
-        use: 'html-withimg-loader'
+        use: 'html-loader'
       }
     ]
   }
