@@ -227,7 +227,8 @@ module.exports={
 1. css-loader 
 
 >安装：npm i css-loader -D  
->描述：此loader 对 css 中的 @import进行处理
+>描述：1、此loader 对 css 中的 @import进行处理  
+>2、内部集成了 cssnano
 
 ```javascript
 //js中内联处理
@@ -330,7 +331,7 @@ module.exports={
   optimization: {
     minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
   },
-  ```
+```
 
 ## JS 处理
 
@@ -735,15 +736,36 @@ resolve.cachePredicate：是否缓存，支持 boolean 和 function，function �
 
 ## 区分不同环境
 
-1. 设置环境变量， webpack.DefinePlugin
+1. process.env.NODE_ENV 
+
+>1、设置`mode`将会默认设置 `process.env.NODE_ENV`  
+```javascript
+module.exports={
+  mode:'production', // process.env.NODE_ENV=production
+  mode:'development' // process.env.NODE_ENV=development
+}
+```
+
+>2、`cross-env` 设置 `process.evn.NODE_ENV`  
+>安装: npm i cross-env -D
+```javascript
+// package.json
+{
+  "scripts": {
+      "build": "cross-env NODE_ENV=production webpack --config webpack.config.js"
+  }
+}
+```  
+
+2. 设置环境变量， `webpack.DefinePlugin`
 
 ```javascript
-  new webpack. DefinePlugin({
+  new webpack.DefinePlugin({
     ENV: JSON.stringify('dev')
   })
 ``` 
 
-2. 设置不同开发环境config  webpack-merge
+3. 设置不同开发环境config  webpack-merge
 
 >安装：npm i webpack-merge -D  
 >描述：1、安装 `webpack-merge`  
@@ -890,6 +912,92 @@ module.exports={
   }
 }
 ``` 
+
+## webpack优化 -- 体积优化
+
+1. `javascript`压缩  
+    1.1、terser-webpack-plugin  
+    >安装：npm i terser-webpack-plugin -D  
+    >描述：webpack官方维护的js压缩插件
+    ```javascript
+    const TerserPlugin = require('terser-webpack-plugin');
+    module.exports = {
+        optimization: {
+            minimizer: [
+              new TerserPlugin({
+                parallel: true,  // 多线程
+                // 使用 cache，加快二次构建速度
+                cache: true,
+                terserOptions: {
+                    comments: false,
+                    compress: {
+                        // 删除无用的代码
+                        unused: true,
+                        // 删掉 debugger
+                        drop_debugger: true, 
+                        // 移除 console
+                        drop_console: true, 
+                        // 移除无用的代码
+                        dead_code: true 
+                    }
+                }
+              });
+            ]
+        }
+    };
+    ```
+    1.2、Scope Hoisting 
+    >描述：1、作用域提升。webpack分析模块关系，尽可能把模块放到一个函数中  
+    >2、导致打包的文件体积比较大
+    ```javascript
+    // webpack.config.js
+      module.exports = {
+          optimization: {
+              concatenateModules: true //设置
+          }
+      };
+    ```
+2. `CSS`体积优化  
+    2.1、mini-css-extract-plugin  
+    >安装：npm i mini-css-extract-plugin -D  
+    >描述：将css打包成一个文件再引入
+    ```javascript
+    const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+    module.exports = {
+      plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+            chunkFilename: '[name].[contenthash:8].css'
+        })
+      ],
+      module: {
+        rules: [
+          {
+            test: /\.css$/,
+            use: [
+                MiniCssExtractPlugin.loader,
+                'css-loader'
+            ]
+          }
+        ]
+      }
+    };
+    ```
+    2.2、optimize-css-assets-webpack-plugin  
+    >安装：npm i optimize-css-assets-webpack-plugin -D  
+    >描述：css压缩插件。使用的是cssnano引擎
+    ```javascript
+    // webpack.config.js
+    const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+    module.exports = {
+      optimization: {
+        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+      }
+    };
+    ```
+3. 图片资源优化
+>1、使用file-loader或者url-loader  
+>2、参考上面的图片引入
 
 ## webpack 优化
 
