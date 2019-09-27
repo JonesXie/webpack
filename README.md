@@ -319,7 +319,8 @@ module.exports={
 5. node-sass && sass-loader 、less && less-loader、stylus && stylus-loader
 
 >安装：npm i node-sass sass-loader -D  
->描述：此loader 将scss/less/stylus 进行 =>css 处理
+>描述：此loader 将scss/less/stylus 进行 =>css 处理  
+>Tips：fast-sass-loader 比 sass-loader快5-10倍
 
 6. optimize-css-assets-webpack-plugin
 
@@ -999,48 +1000,85 @@ module.exports={
 >1、使用file-loader或者url-loader  
 >2、参考上面的图片引入
 
-## webpack 优化
+## webpack优化 -- 拆分代码
 
-1. noParse  exclude  include
-
->1、`noParse` 不解析, 设置的文件  
->2、`exclude` 排除, 对设置的文件进行排除  
->3、`include` 包括, 只对设置的文件进行匹配
-
+1. splitChunks常见配置
+> 1、使用`optimization` 中的 `splitChunks`   
+> 2、[详细解释地址](https://www.imooc.com/read/29/article/277 "慕课网")
 ```javascript
-module.exports={
-  module:{
-    noParse:/jquery/
-    rules:[{
-      test:/\.js$/,
-      use:{
-        loader:"babel-loader",
-        options:{
-          presets:["@babel/preset-env"]
+module.exports = {
+    // ...
+    optimization: {
+        splitChunks: {
+            chunks: 'async', // 三选一： "initial" | "all" | "async" (默认)
+            minSize: 30000, // 最小尺寸，30K，development 下是10k
+            maxSize: 0, // 文件的最大尺寸，0为不限制
+            minChunks: 1, // 默认1，被提取的一个模块至少需要在几个 chunk 中被引用
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/, // 正则规则，如果符合就提取 chunk
+                    priority: -10 // 缓存组优先级，当一个模块可能属于多个 chunkGroup，这里是优先级
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20, // 优先级
+                    reuseExistingChunk: true // 如果该chunk包含的modules都已经另一个被分割的chunk中存在，那么直接引用已存在的chunk，不会再重新产生一个
+                }
+            }
         }
+    }
+};
+```
+2. cacheGroups缓存组
+>1、`splitChunks`的配置项都作用于`cacheGroup`上的，默认有两个cacheGroup：`vendors`和`default ` 
+>2、独有的配置项：`test`(匹配规则)、`priority`(优先级)和`reuseExistingChunk` (复用) 
+
+## webpack优化 -- 速度优化
+
+1. 减少查找过程  
+    1.1、resolve.alias
+    >别名，快速查找
+    ```javascript
+    module.exports={
+      resolve:{
+        alias:{
+          "@":path.resolve(__dirname,'src')
+        },
+        extensions:['js','json','vue']
+      }
+    }
+    ```
+    1.2、resolve.extensions
+    >1、优先查找,将优先查找定义后缀的文件  
+    >2、或者引入文件带上后缀名 
+
+    1.3、noParse
+    >1、排除不需要解析的模块
+    >2、或者引入文件带上后缀名
+    ```javascript
+    module.exports={
+      module:{
+        noParse: /node_modules\/(jquey\.js)/;
+        rules: [
+          {
+            // test 使用正则
+            test: /\.js$/,
+            loader: 'babel-loader',
+            // 排除路径使用数组
+            exclude: [path.resolve(__dirname, './node_modules')],
+            // 查找路径使用数组
+            include: [path.resolve(__dirname, './src')]
+          }
+        ];
       },
-      exclude:/node_modules/,
-      include:path.resovle("src")
-    }]
-  }
-}
-``` 
+    }
+    ```
+    1.4、rules配置
+    >1、只在 test 和 文件名匹配中使用正则表达式  
+    >2、在 include 和 exclude 中使用绝对路径数组；   
+    >3、尽量避免 exclude，更倾向于使用 include
 
-2. IgnorePlugin 
-
-> webpack自带插件，设置`忽略某项引入`
-
-```javascript
-  plugins: [
-    //忽略引入 ./locale  在moment中
-    new webpack.IgnorePlugin(/\.\/locale/,/moment/)
-  ], 
-  // 可以手动引入所需的语言包
-  import "moment/locale/zh-cn"; 
-  moment.locale("zh-cn"); 
-``` 
-
-3. happypack 
+2. happypack  多线程打包
 
 >安装：npm i happypack -D  
 >描述：happypack插件 ，`多线程打包`
@@ -1073,10 +1111,76 @@ module.exports = {
     }]
   }
 }
-
 ``` 
 
-4. webpack内置优化 
+3. webpack.DllPlugin 来预先编译  
+    3.1、DLLPlugin
+    >1、需要单独设置一个独立的webpack配置文件.例：webpack.config.dll.js
+    ```javascript
+    // webpack.config.dll.js
+    const webpack = require('webpack');
+    // 这里是第三方依赖库
+    const vendors = ['react', 'react-dom'];
+
+    module.exports = {
+        mode: 'production',
+        entry: {
+            // 定义程序中打包公共文件的入口文件vendor.js
+            vendor: vendors
+        },
+        output: {
+            filename: '[name].[chunkhash].js',
+            // 这里是使用将 verdor 作为 library 导出，并且指定全局变量名字是[name]_[chunkhash]
+            library: '[name]_[chunkhash]'
+        },
+        plugins: [
+            new webpack.DllPlugin({
+                // 这里是设置 mainifest.json 路径
+                path: 'manifest.json',
+                name: '[name]_[chunkhash]',
+                context: __dirname
+            })
+        ]
+    };
+    ```
+    3.2、DllReferencePlugin  
+    >在`webpack.config.js`中指定`manifest.json`的内容
+    ```javascript
+    // webpack.config.js
+    const webpack = require('webpack');
+    module.exports = {
+        output: {
+            filename: '[name].[chunkhash].js'
+        },
+        entry: {
+            app: './src/index.js'
+        },
+        plugins: [
+            new webpack.DllReferencePlugin({
+                context: __dirname,
+                // 这里导入 manifest配置内容
+                manifest: require('./manifest.json')
+            })
+        ]
+    };
+    ```
+
+## webpack优化 -- 其他优化
+
+1. IgnorePlugin 
+
+> webpack自带插件，设置`忽略某项引入`
+
+```javascript
+  plugins: [
+    //忽略引入 ./locale  在moment中
+    new webpack.IgnorePlugin(/\.\/locale/,/moment/)
+  ], 
+  // 可以手动引入所需的语言包
+  import "moment/locale/zh-cn"; 
+  moment.locale("zh-cn"); 
+``` 
+2. webpack内置优化 
 
 > 1、tree-shaking  
 >>使用 import 导入时，在打包时会自动去除没用的代码  
@@ -1085,36 +1189,7 @@ module.exports = {
 >2、scope-hosting   
 >>作用域提升，打包时将多余的变量进行转化  
 
-5. 代码分割 splitChunks
-
-> 1、使用`optimization` 中的 `splitChunks`   
-> 2、[详细解释地址](https://www.imooc.com/read/29/article/277 "慕课网")
-
-```javascript
-module.exports={
-  optimization: {
-    splitChunks: { //分割代码块
-      cacheGroups: { // 缓存组
-        common: { // 公共模块
-          chunks: "initial", 
-          minSize: 0, //公用的大小
-          minChunks: 2, //被用到的次数
-        }, 
-        vendor: { // 公用引入模块
-          priority: 1, // 处理的优先级
-          test: /node_modules/, //正则，/node_modules/里被引用的
-          chunks: "initial", 
-          minSize: 0, //公用的大小
-          minChunks: 2, //被用到的次数
-        }
-      }
-    }
-  }, 
-}
-
-``` 
-
-6. @babel/plugin-syntax-dynamic-import  import按需懒加载
+3. @babel/plugin-syntax-dynamic-import  import按需懒加载
 
 >安装：npm i @babel/plugin-syntax-dynamic-import -D  
 >描述：`babel插件，需要写在babel中`
@@ -1155,7 +1230,7 @@ module.exports={
 
 ``` 
 
-7. 热更新  HotModuleReplacementPlugin
+4. 热更新  HotModuleReplacementPlugin
 
 > webpack自带插件, 需要在本地服务启动 `hot:true`  
 
@@ -1176,3 +1251,6 @@ if(module.hot){
   })
 }
 ``` 
+
+## webpack常用插件，[附表:Plugins](https://github.com/JoannesXie/webpack/blob/master/history/Schedule/Plugins.md)
+## webpack常用loader，[附表:Loaders](https://github.com/JoannesXie/webpack/blob/master/history/Schedule/Loaders.md)
