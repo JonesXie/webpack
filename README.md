@@ -997,8 +997,24 @@ module.exports={
     };
     ```
 3. 图片资源优化
->1、使用file-loader或者url-loader  
->2、参考上面的图片引入
+>[使用file-loader或者url-loader](#图片引入打包)   
+
+  3.1、imagemin-webpack-plugin
+  >安装：npm i imagemin-webpack-plugin -D  
+  >描述：将图片进行压缩
+  ```javascript
+  // webpack.config.js
+  const ImageminPlugin = require('imagemin-webpack-plugin');
+  module.exports = {
+    plugins: [
+      new ImageminPlugin({
+        pngquant: {
+          quality: '95-100'
+        }
+      })
+    ]
+  };
+  ```
 
 ## webpack优化 -- 拆分代码
 
