@@ -1,23 +1,24 @@
 # webpack
+
 学习webpack文件配置
 
 ## webpack 基本配置
 
-1. webpack && webpack-cli
+1、webpack && webpack-cli
 
 > 安装：npm i webpack webpack-cli -D  
 > 描述：webpack核心模块
 
-2. webpack-dev-server
+2、webpack-dev-server
 
 > 安装：npm i webpack-dev-server -D  
 > 描述：此安装包，安装webpack本地服务
 
 ## Webpack Dev Server 本地服务
 
-1. webpack-dev-server 基础配置
+1、webpack-dev-server 基础配置
 
-> 安装：npm i webpack-dev-server -D    
+> 安装：npm i webpack-dev-server -D  
 > 描述: 本地开发服务
 
 ```javascript
@@ -29,11 +30,11 @@ module.exports={
     contentBase:path.resovle(__dirname,'dist'),
   }
 }
-``` 
+```
 
-2. webpack-dev-server 跨域代理
+2、webpack-dev-server 跨域代理
 
-> 1、直接使用代理    
+> 1、直接使用代理  
 > 2、删除一些自定义的路径  
 > 3、设置多个代理  
 > 4、对https网址转发设置 secure:false  
@@ -75,11 +76,11 @@ module.exports={
     }
   }
 }
-``` 
+```
 
 ## html 处理
 
-1. html-webpack-plugin 
+1、html-webpack-plugin
 
 >安装：npm i html-webpack-plugin -D  
 >描述：此插件将html文件输出在输出文件夹中。主要参数[具体解释](https://www.jianshu.com/p/08a60756ffda)。
@@ -154,13 +155,13 @@ module.exports={
 }
 ```
 
-2. 使用模板引擎 ejs
+2、使用模板引擎 ejs
 
 >安装：npm i html-loader ejs ejs-html-laoder -D  
 >描述：1、安装`html-loader` , 将html中的文件进行解析  
 >2、安装`ejs、ejs-html-laoder`对ejs模板进行解析
 
-```javascript 
+```javascript
 //webpack.config.js
 module.exports={
   plugins:[
@@ -181,20 +182,20 @@ module.exports={
 }
 ```
 
-3. 多页面处理 glob
+3、多页面处理 glob
 
 >安装：npm i glob -D  
 >描述：1、插件，匹配解析当前文档目录  
 >2、**多页面DEMO：[MultipleDemo](https://github.com/JoannesXie/webpack/blob/master/history/MultiDemo/webpack.config.js)**
 
 ```javascript
-const glob = require('glob'); 
+const glob = require('glob');
 
 let setMAP = () => {
-  const entry = {}; 
-  const HtmlWebpackPlugins = []; 
+  const entry = {};
+  const HtmlWebpackPlugins = [];
   //获取当前目录下匹配 "./src/*/index.js" 的文件目录
-  const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js")); 
+  const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js"));
   entryFiles.forEach(v => {
     const Match = v.match(/src\/(.*)\/index\.js/);
     const pageName = Match && Match[1];
@@ -214,17 +215,17 @@ let setMAP = () => {
     HtmlWebpackPlugins
   }
 }
-const {entry, HtmlWebpackPlugins} = setMAP(); 
+const {entry, HtmlWebpackPlugins} = setMAP();
 
 module.exports={
-  entry:entry, 
+  entry:entry,
   plugins:[....].contact(HtmlWebpackPlugins)
 }
-``` 
+```
 
 ## css 处理
 
-1. css-loader 
+1、css-loader
 
 >安装：npm i css-loader -D  
 >描述：1、此loader 对 css 中的 @import进行处理  
@@ -236,19 +237,19 @@ import css from 'css-loader!./css/index.css';
 console.log(css);
 ```
 
-2. mini-css-extract-plugin (常用)
+2、mini-css-extract-plugin (常用)
 
 >安装：npm i mini-css-extract-plugin -D  
 >描述：1、插件, 将所有的css样式打包在一个文件中，通过 link引入。  
 >2、在loader 中使用 `MiniCssExtractPlugin.loader`
 
-3. style-loader (可选)
+3、style-loader (可选)
 
 >安装：npm i style-loader -D  
 >描述：1、此loader 将css插入到html中  
 >2、与 `mini-css-extract-plugin` 不能共用
 
-4. postcss-loader && autoprefixer 
+4、postcss-loader && autoprefixer
 
 >安装：npm i postcss-loader autoprefixer -D  
 >描述：1、此插件和loader是自动给css样式添加浏览器前缀。  
@@ -284,7 +285,7 @@ module.exports = {
 案例：
 
 ```javascript
-const MiniCssExtractPlugin = require('mini-css-extract-plugin'); 
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports={
   plugins:[
@@ -316,13 +317,13 @@ module.exports={
 }
 ```
 
-5. node-sass && sass-loader 、less && less-loader、stylus && stylus-loader
+5、node-sass && sass-loader 、less && less-loader、stylus && stylus-loader
 
 >安装：npm i node-sass sass-loader -D  
 >描述：此loader 将scss/less/stylus 进行 =>css 处理  
 >Tips：fast-sass-loader 比 sass-loader快5-10倍
 
-6. optimize-css-assets-webpack-plugin
+6、optimize-css-assets-webpack-plugin
 
 >安装：npm i optimize-css-assets-webpack-plugin -D  
 >描述：1、此插件是将css代码进行压缩。使用此插件，需要js插件进行js压缩。  
@@ -336,29 +337,29 @@ module.exports={
 
 ## JS 处理
 
-1. @babel/core
+1、@babel/core
 
 >安装：npm i @babel/core -D  
 >描述：插件，将es语法转换为常用的js语法
 
-2. babel-loader 
+2、babel-loader
 
 >安装：npm i babel-loader -D  
->描述：此loader 是 babel 转换的loader 
+>描述：此loader 是 babel 转换的loader
 
-3. @babel/preset-env
+3、@babel/preset-env
 
 >安装：npm i @babel/preset-env -D  
 >描述：babel 预设环境
 
-4. @babel/plugin-transform-runtime  &&  @babel/runtime(生产环境)
+4、@babel/plugin-transform-runtime  &&  @babel/runtime(生产环境)
 
 >安装：npm i @babel/plugin-transform-runtime -D  
 >安装：npm i @babel/runtime -S  
 >描述：1、babel插件 , ES代码装换时，可以重复使用Babel注入的帮助程序代码来节省代码。  
 >2、对于实例方法，例如"foobar".includes("foo")只能使用core-js
 
-5. @babel/runtime-corejs2 || @babel/runtime-corejs3 (生产环境)
+5、@babel/runtime-corejs2 || @babel/runtime-corejs3 (生产环境)
 
 >安装：npm i @babel/runtime-corejs2 -S  
 >安装：npm i @babel/runtime-corejs3 -S  
@@ -397,28 +398,28 @@ module.exports={
 }
 ```
 
-6. @babel/polyfill (生产环境)(babel7.4.0已废弃)(可使用corejs)
+6、@babel/polyfill (生产环境)(babel7.4.0已废弃)(可使用corejs)
 
 >安装：npm i @babel/polyfill -D  
 >描述：babel插件 , 将实例方法进行解析，在babel7.4.0已废弃，可以使用第7条corejs
 
-```javascript 
+```javascript
 npm install --save @babel/polyfill
 // 在index.js中引入即可
 require("@babel/polyfill")
 ```
 
-7. @babel/plugin-proposal-class-properties
+7、@babel/plugin-proposal-class-properties
 
 >安装：npm i @babel/plugin-proposal-class-properties -D  
 >描述：babel插件 , 对es 中 class 模块进行转换
 
-8. @babel/plugin-proposal-decorators
+8、@babel/plugin-proposal-decorators
 
 >安装：npm i @babel/plugin-proposal-decorators -D  
 >描述：babel插件 , 装饰器
 
-```javascript 
+```javascript
 module: {
   rules: [
     //babel 转换
@@ -443,7 +444,7 @@ module: {
 }
 ```
 
-9. eslint && eslint-loader
+9、eslint && eslint-loader
 
 >安装：npm i eslint eslint-loader -D  
 >描述：1、js校验。需要配置文件 `.eslintrc.json`  
@@ -497,7 +498,7 @@ module: {
 
 > loader , 对于引入的文件处理
 
-```javascript 
+```javascript
 module.exports={
   module:{
     rules:[
@@ -517,9 +518,9 @@ module.exports={
 }
 ```
 
-2. 使用js引入图片
+2、使用js引入图片
 
-```javascript 
+```javascript
   import logo from "./logo.jpg"
   let img = new Image()
   img.src = logo;
@@ -527,16 +528,16 @@ module.exports={
   document.body.appendChild(img)
 ```
 
-3. 使用css引入图片
+3、使用css引入图片
 
 >1、直接引入，因为css-loader会进行转换  
->2、css中使用 alias配置的参数，需要加上 `~` 
+>2、css中使用 alias配置的参数，需要加上 `~`
 
 ```javascript
  background:url('./logo.jpg')  => background:url(rquire('./logo.jpg'))
 ```
 
-4. 使用html引入图片 `html-loader`
+4、使用html引入图片 `html-loader`
 
 > 描述：1、loader，对html中的`外部资源(图片等)`进行转换  
 
@@ -548,7 +549,9 @@ rules:[
   }
 ]
 ```
+
 >3、`html`和`css`中使用 `alias`配置的参数，需要加上 `~`  
+
 ```javascript
 // webpack.config.js
 const path = require('path')
@@ -559,7 +562,7 @@ module.exports={
     }
   }
 }
-//html 
+//html
 <img src="~@/img/large.png" alt="背景图" />
 //css
 .bg-img {
@@ -569,7 +572,7 @@ module.exports={
 
 ## 其他资源处理
 
-1. 字体、富媒体
+1、字体、富媒体
 
 > 对于字体、富媒体等静态资源，可以直接使用`url-loader`或者`file-loader`进行配置即可
 
@@ -583,11 +586,11 @@ module.exports={
         name: 'assets/[name].[hash:7].[ext]'
     }
 },
-``` 
+```
 
 ## 打包文件分类
 
-1. 设置全局路径 `publicPath`
+1、设置全局路径 `publicPath`
 
 > 对于引入的资源`(js, css, images等)`都将会自动加上 `publicPath`
 
@@ -599,9 +602,9 @@ module.exports={
     publicPath:'https://www.baidu.com'
   }
 }
-``` 
+```
 
-2. 设置css打包文件夹名
+2、设置css打包文件夹名
 
 > 在 `MiniCssExtractPlugin` 插件中`filename`里加 `css/`
 
@@ -611,11 +614,11 @@ module.exports={
     new MiniCssExtractPlugin({
       filename: "css/main.[hash:8].css", // 添加css/
     })
-  ], 
+  ],
 }
-``` 
+```
 
-3. 设置图片打包文件夹名
+3、设置图片打包文件夹名
 
 >1、在 `url-laoder(file-loader)`中的`options`里设置  `outputPath`  
 >2、也可以单独设置一个`publicPath`
@@ -637,11 +640,11 @@ rules: [
     }
   }
 ]
-``` 
+```
 
 ## webpack 小插件
 
-1. clean-webpack-plugin 
+1、clean-webpack-plugin
 
 >安装：npm i clean-webpack-plugin -D  
 >描述：1、在打包时将之前的文件夹清理掉  
@@ -661,12 +664,12 @@ module.exports={
     })
   ]
 }
-``` 
+```
 
-2. copy-webpack-plugin 
+2、copy-webpack-plugin
 
 >安装：npm i copy-webpack-plugin -D  
->描述：将文件拷贝到新的地方，通常用作将静态资源拷贝到dist文件夹中 
+>描述：将文件拷贝到新的地方，通常用作将静态资源拷贝到dist文件夹中
 
 ```javascript
 const CopyWebpackPlugin = require("copy-webpack-plugin")
@@ -680,9 +683,9 @@ module.exports={
     }])
   ]
 }
-``` 
+```
 
-3. BannerPlugin  
+3、BannerPlugin  
 
 > webpack自带插件，将每个问价中写入版权信息
 
@@ -693,11 +696,11 @@ module.exports={
     new webpack.BannerPlugin('make 2019 by joannes')
   ]
 }
-``` 
+```
 
 ## resolve 参数
 
-1. resolve.alias
+1、resolve.alias
 
 > 常用，文件名缩写
 
@@ -710,9 +713,9 @@ module.exports={
     }
   }
 }
-``` 
+```
 
-2. resolve.extensions
+2、resolve.extensions
 
 > 帮助 Webpack 解析扩展名的配置，默认值：`['.wasm', '.mjs', '.js', '.json']`
 
@@ -721,10 +724,10 @@ module.exports = {
   resolve: {
       extensions: ['.js', '.json', '.css']
   }
-}; 
-``` 
+};
+```
 
-3. 其他参数
+3、其他参数
 
 ```javascript
 resolve.mainFields: 入口字段  
@@ -732,14 +735,15 @@ resolve.mainFiles：解析目录时候的默认文件名，默认是index，即�
 resolve.modules：查找模块依赖时，默认是node_modules  
 resolve.symlinks：是否解析符合链接（软连接，symlink）  
 resolve.plugins：添加解析插件，数组格式  
-resolve.cachePredicate：是否缓存，支持 boolean 和 function，function 传入一个带有 path 和 require 的对象，必须返回 boolean 值。 
+resolve.cachePredicate：是否缓存，支持 boolean 和 function，function 传入一个带有 path 和 require 的对象，必须返回 boolean 值。
 ```
 
 ## 区分不同环境
 
-1. process.env.NODE_ENV 
+1. process.env.NODE_ENV
 
 >1、设置`mode`将会默认设置 `process.env.NODE_ENV`  
+
 ```javascript
 module.exports={
   mode:'production', // process.env.NODE_ENV=production
@@ -749,6 +753,7 @@ module.exports={
 
 >2、`cross-env` 设置 `process.evn.NODE_ENV`  
 >安装: npm i cross-env -D
+
 ```javascript
 // package.json
 {
@@ -758,51 +763,51 @@ module.exports={
 }
 ```  
 
-2. 设置环境变量， `webpack.DefinePlugin`
+2、设置环境变量， `webpack.DefinePlugin`
 
 ```javascript
   new webpack.DefinePlugin({
     ENV: JSON.stringify('dev')
   })
-``` 
+```
 
-3. 设置不同开发环境config  webpack-merge
+3、设置不同开发环境config  webpack-merge
 
 >安装：npm i webpack-merge -D  
 >描述：1、安装 `webpack-merge`  
 > 2、设置一个公共的参数，例如:`webpack.base.js`  
-> 3、分别设置不同环境的参数，例如：`webapck.prod.js`,` webpack.dev.js`  
+> 3、分别设置不同环境的参数，例如：`webapck.prod.js`,`webpack.dev.js`  
 > 4、在不同的环境中引入公共参数和`webpakc-merge`  
 > 5、在`package.json`中设置不同的启动命令
 
 ```javascript
 //package.json
 "scripts": {
-  "build": "webpack  --progress --config webpack.prod.js", 
+  "build": "webpack  --progress --config webpack.prod.js",
   "dev": "webpack-dev-server --progress  --config webpack.dev.js"
 }
 // webpack.prod.js
 let {smart} = require('webpack-merge')
 let base = require("./webpack.base.js")
 module.exports = smart(base, {
-  mode: "production", 
+  mode: "production",
 })
-``` 
+```
 
 ## 全局变量引入(jquery为例)
 
-**默认已经通过npm安装了jQuery**
+>**默认已经通过npm安装了jQuery**
 
-1. import $ from "jquery" 
+1、import $ from "jquery"
 
 > 在需要的js文件中直接引入, 但是不可以用 `window.$`
 
-2. expose-loader (生产环境) 
+2、expose-loader (生产环境)
 >安装：npm i expose-loader -S  
 >描述：1、暴露全局的loader  
 >2、pre: 前置 , normal: 正常 , expose-loader: 内联 , post: 后置
 
-```javascript 
+```javascript
 //使用一：在文件中使用
 import $ from "expose-loader?$!jquery"
 
@@ -815,14 +820,14 @@ module:{
     }
   ]
 },
-import $ from "jquery" 
+import $ from "jquery"
 ```
 
-3. webpack.ProvidePlugin  
+3、webpack.ProvidePlugin  
 
 > webpack自带插件，将 $ 注入到每个模块中
 
-```javascript 
+```javascript
 //在webpack.config中配置
 const webpack = require('webpack')
 module.exports={
@@ -834,11 +839,11 @@ module.exports={
 }
 ```
 
-4. externals 忽略引入
+4、externals 忽略引入
 
 > 忽略引入，不进行打包, jquery已经通过cdn引入了
 
-```javascript 
+```javascript
 module.exports={
   externals:{
     jquery:'$'
@@ -848,253 +853,270 @@ module.exports={
 
 ## devtool 调试代码
 
-1. source-map
+1、source-map
 
 > 源码映射，单独生成一个sourcemap文件，报错时会标识当前报错的列和行
 
 ```javascript
 module.exports={
-  entry:'', 
+  entry:'',
   devtool:"source-map"
 }
-``` 
+```
 
-2. eval-source-map
+2、eval-source-map
 
 > 源码映射，不会产生单独文件，报错时会标识当前报错的列和行
 
 ```javascript
 module.exports={
-  entry:'', 
+  entry:'',
   devtool:"eval-source-map"
 }
-``` 
+```
 
-3. cheap-module-source-map
+3、cheap-module-source-map
 
 > 源码映射，单独生成一个sourcemap文件，报错时不会标识当前报错的列和行
 
 ```javascript
 module.exports={
-  entry:'', 
+  entry:'',
   devtool:"cheap-module-source-map"
 }
-``` 
+```
 
-4. cheap-module-eval-source-map
+4、cheap-module-eval-source-map
 
 > 源码映射，不会产生单独文件，报错时不会标识当前报错的列和行
 
 ```javascript
 module.exports={
-  entry:'', 
+  entry:'',
   devtool:"cheap-module-eval-source-map"
 }
-``` 
+```
 
 ## watch 实时监控打包
 
-1. watch
+1、watch
 
 > 将watch设置为 true时，将会实时监控文件
 
-2. watchOptions
+2、watchOptions
 
 > 设置watch相关参数
 
 ```javascript
 module.exports={
-  entry:'', 
-  watch:true, 
+  entry:'',
+  watch:true,
   watchOptions:{
     poll:1000, // 每秒问我 1000 次
     aggregateTimeout:500, // 防抖
     ingored: /node_modules/  //不需要监控的文件
   }
 }
-``` 
+```
 
 ## webpack优化 -- 体积优化
 
-1. `javascript`压缩  
-    1.1、terser-webpack-plugin  
-    >安装：npm i terser-webpack-plugin -D  
-    >描述：webpack官方维护的js压缩插件
-    ```javascript
-    const TerserPlugin = require('terser-webpack-plugin');
-    module.exports = {
-        optimization: {
-            minimizer: [
-              new TerserPlugin({
-                parallel: true,  // 多线程
-                // 使用 cache，加快二次构建速度
-                cache: true,
-                terserOptions: {
-                    comments: false,
-                    compress: {
-                        // 删除无用的代码
-                        unused: true,
-                        // 删掉 debugger
-                        drop_debugger: true, 
-                        // 移除 console
-                        drop_console: true, 
-                        // 移除无用的代码
-                        dead_code: true 
-                    }
-                }
-              });
-            ]
-        }
-    };
-    ```
-    1.2、Scope Hoisting 
-    >描述：1、作用域提升。webpack分析模块关系，尽可能把模块放到一个函数中  
-    >2、导致打包的文件体积比较大
-    ```javascript
-    // webpack.config.js
-      module.exports = {
-          optimization: {
-              concatenateModules: true //设置
-          }
-      };
-    ```
-2. `CSS`体积优化  
-    2.1、mini-css-extract-plugin  
-    >安装：npm i mini-css-extract-plugin -D  
-    >描述：将css打包成一个文件再引入
-    ```javascript
-    const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-    module.exports = {
-      plugins: [
-        new MiniCssExtractPlugin({
-            filename: '[name].css',
-            chunkFilename: '[name].[contenthash:8].css'
-        })
-      ],
-      module: {
-        rules: [
-          {
-            test: /\.css$/,
-            use: [
-                MiniCssExtractPlugin.loader,
-                'css-loader'
-            ]
-          }
+1、`javascript`压缩  
+1.1、terser-webpack-plugin  
+>安装：npm i terser-webpack-plugin -D  
+>描述：webpack官方维护的js压缩插件  
+
+```javascript
+  const TerserPlugin = require('terser-webpack-plugin');
+  module.exports = {
+      optimization: {
+          minimizer: [
+            new TerserPlugin({
+              parallel: true,  // 多线程
+              // 使用 cache，加快二次构建速度
+              cache: true,
+              terserOptions: {
+                  comments: false,
+                  compress: {
+                      // 删除无用的代码
+                      unused: true,
+                      // 删掉 debugger
+                      drop_debugger: true,
+                      // 移除 console
+                      drop_console: true,
+                      // 移除无用的代码
+                      dead_code: true
+                  }
+              }
+            });
+          ]
+      }
+  };
+```
+
+1.2、Scope Hoisting
+>描述：1、作用域提升。webpack分析模块关系，尽可能把模块放到一个函数中  
+>2、导致打包的文件体积比较大  
+
+```javascript
+// webpack.config.js
+  module.exports = {
+      optimization: {
+          concatenateModules: true //设置
+      }
+  };
+```
+
+2、`CSS`体积优化  
+2.1、mini-css-extract-plugin  
+>安装：npm i mini-css-extract-plugin -D  
+>描述：将css打包成一个文件再引入
+
+```javascript
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+module.exports = {
+  plugins: [
+    new MiniCssExtractPlugin({
+        filename: '[name].css',
+        chunkFilename: '[name].[contenthash:8].css'
+    })
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader'
         ]
       }
-    };
-    ```
-    2.2、optimize-css-assets-webpack-plugin  
-    >安装：npm i optimize-css-assets-webpack-plugin -D  
-    >描述：css压缩插件。使用的是cssnano引擎
-    ```javascript
-    // webpack.config.js
-    const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-    module.exports = {
-      optimization: {
-        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
-      }
-    };
-    ```
-3. 图片资源优化
->[使用file-loader或者url-loader](#图片引入打包)   
-
-  3.1、imagemin-webpack-plugin
-  >安装：npm i imagemin-webpack-plugin -D  
-  >描述：将图片进行压缩
-  ```javascript
-  // webpack.config.js
-  const ImageminPlugin = require('imagemin-webpack-plugin');
-  module.exports = {
-    plugins: [
-      new ImageminPlugin({
-        pngquant: {
-          quality: '95-100'
-        }
-      })
     ]
-  };
-  ```
+  }
+};
+```
+
+2.2、optimize-css-assets-webpack-plugin  
+>安装：npm i optimize-css-assets-webpack-plugin -D  
+>描述：css压缩插件。使用的是cssnano引擎
+
+```javascript
+// webpack.config.js
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+module.exports = {
+  optimization: {
+    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+  }
+};
+```
+
+3、图片资源优化
+
+>[使用file-loader或者url-loader](#图片引入打包)
+
+3.1、imagemin-webpack-plugin
+>安装：npm i imagemin-webpack-plugin -D  
+>描述：将图片进行压缩
+
+```javascript
+// webpack.config.js
+const ImageminPlugin = require('imagemin-webpack-plugin');
+module.exports = {
+  plugins: [
+    new ImageminPlugin({
+      pngquant: {
+        quality: '95-100'
+      }
+    })
+  ]
+};
+```
 
 ## webpack优化 -- 拆分代码
 
-1. splitChunks常见配置
-> 1、使用`optimization` 中的 `splitChunks`   
+1、splitChunks常见配置
+
+> 1、使用`optimization` 中的 `splitChunks`
 > 2、[详细解释地址](https://www.imooc.com/read/29/article/277 "慕课网")
+
 ```javascript
 module.exports = {
     // ...
-    optimization: {
-        splitChunks: {
-            chunks: 'async', // 三选一： "initial" | "all" | "async" (默认)
-            minSize: 30000, // 最小尺寸，30K，development 下是10k
-            maxSize: 0, // 文件的最大尺寸，0为不限制
-            minChunks: 1, // 默认1，被提取的一个模块至少需要在几个 chunk 中被引用
-            cacheGroups: {
-                vendors: {
-                    test: /[\\/]node_modules[\\/]/, // 正则规则，如果符合就提取 chunk
-                    priority: -10 // 缓存组优先级，当一个模块可能属于多个 chunkGroup，这里是优先级
-                },
-                default: {
-                    minChunks: 2,
-                    priority: -20, // 优先级
-                    reuseExistingChunk: true // 如果该chunk包含的modules都已经另一个被分割的chunk中存在，那么直接引用已存在的chunk，不会再重新产生一个
-                }
-            }
-        }
-    }
+  optimization: {
+      splitChunks: {
+          chunks: 'async', // 三选一： "initial" | "all" | "async" (默认)
+          minSize: 30000, // 最小尺寸，30K，development 下是10k
+          maxSize: 0, // 文件的最大尺寸，0为不限制
+          minChunks: 1, // 默认1，被提取的一个模块至少需要在几个 chunk 中被引用
+          cacheGroups: {
+              vendors: {
+                  test: /[\\/]node_modules[\\/]/, // 正则规则，如果符合就提取 chunk
+                  priority: -10 // 缓存组优先级，当一个模块可能属于多个 chunkGroup，这里是优先级
+              },
+              default: {
+                  minChunks: 2,
+                  priority: -20, // 优先级
+                  reuseExistingChunk: true // 如果该chunk包含的modules都已经另一个被分割的chunk中存在，那么直接引用已存在的chunk，不会再重新产生一个
+              }
+          }
+      }
+  }
 };
 ```
-2. cacheGroups缓存组
->1、`splitChunks`的配置项都作用于`cacheGroup`上的，默认有两个cacheGroup：`vendors`和`default ` 
->2、独有的配置项：`test`(匹配规则)、`priority`(优先级)和`reuseExistingChunk` (复用) 
+
+2、cacheGroups缓存组
+>1、`splitChunks`的配置项都作用于`cacheGroup`上的，默认有两个cacheGroup：`vendors`和`default`
+>2、独有的配置项：`test`(匹配规则)、`priority`(优先级)和`reuseExistingChunk` (复用)
 
 ## webpack优化 -- 速度优化
 
-1. 减少查找过程  
-    1.1、resolve.alias
-    >别名，快速查找
-    ```javascript
-    module.exports={
-      resolve:{
-        alias:{
-          "@":path.resolve(__dirname,'src')
-        },
-        extensions:['js','json','vue']
+1、减少查找过程  
+1.1、resolve.alias
+>别名，快速查找
+
+```javascript
+module.exports={
+  resolve:{
+    alias:{
+      "@":path.resolve(__dirname,'src')
+    },
+    extensions:['js','json','vue']
+  }
+}
+```
+
+1.2、resolve.extensions
+>1、优先查找,将优先查找定义后缀的文件  
+>2、或者引入文件带上后缀名
+
+1.3、noParse
+>1、排除不需要解析的模块
+>2、或者引入文件带上后缀名
+
+```javascript
+module.exports={
+  module:{
+    noParse: /node_modules\/(jquey\.js)/;
+    rules: [
+      {
+        // test 使用正则
+        test: /\.js$/,
+        loader: 'babel-loader',
+        // 排除路径使用数组
+        exclude: [path.resolve(__dirname, './node_modules')],
+        // 查找路径使用数组
+        include: [path.resolve(__dirname, './src')]
       }
-    }
-    ```
-    1.2、resolve.extensions
-    >1、优先查找,将优先查找定义后缀的文件  
-    >2、或者引入文件带上后缀名 
+    ];
+  },
+}
+```
 
-    1.3、noParse
-    >1、排除不需要解析的模块
-    >2、或者引入文件带上后缀名
-    ```javascript
-    module.exports={
-      module:{
-        noParse: /node_modules\/(jquey\.js)/;
-        rules: [
-          {
-            // test 使用正则
-            test: /\.js$/,
-            loader: 'babel-loader',
-            // 排除路径使用数组
-            exclude: [path.resolve(__dirname, './node_modules')],
-            // 查找路径使用数组
-            include: [path.resolve(__dirname, './src')]
-          }
-        ];
-      },
-    }
-    ```
-    1.4、rules配置
-    >1、只在 test 和 文件名匹配中使用正则表达式  
-    >2、在 include 和 exclude 中使用绝对路径数组；   
-    >3、尽量避免 exclude，更倾向于使用 include
+1.4、rules配置
+>1、只在 test 和 文件名匹配中使用正则表达式  
+>2、在 include 和 exclude 中使用绝对路径数组；  
+>3、尽量避免 exclude，更倾向于使用 include
 
-2. happypack  多线程打包
+2、happypack  多线程打包
 
 >安装：npm i happypack -D  
 >描述：happypack插件 ，`多线程打包`
@@ -1117,7 +1139,7 @@ module.exports = {
         }
       }]
     })
-  ], 
+  ],
   module: {
     // css同样适用
     rules: [{
@@ -1127,63 +1149,66 @@ module.exports = {
     }]
   }
 }
-``` 
+```
 
-3. webpack.DllPlugin 来预先编译  
-    3.1、DLLPlugin
-    >1、需要单独设置一个独立的webpack配置文件.例：webpack.config.dll.js
-    ```javascript
-    // webpack.config.dll.js
-    const webpack = require('webpack');
-    // 这里是第三方依赖库
-    const vendors = ['react', 'react-dom'];
+3、webpack.DllPlugin 来预先编译  
+3.1、DLLPlugin
+>1、需要单独设置一个独立的webpack配置文件.例：webpack.config.dll.js
 
-    module.exports = {
-        mode: 'production',
-        entry: {
-            // 定义程序中打包公共文件的入口文件vendor.js
-            vendor: vendors
-        },
-        output: {
-            filename: '[name].[chunkhash].js',
-            // 这里是使用将 verdor 作为 library 导出，并且指定全局变量名字是[name]_[chunkhash]
-            library: '[name]_[chunkhash]'
-        },
-        plugins: [
-            new webpack.DllPlugin({
-                // 这里是设置 mainifest.json 路径
-                path: 'manifest.json',
-                name: '[name]_[chunkhash]',
-                context: __dirname
-            })
-        ]
-    };
-    ```
-    3.2、DllReferencePlugin  
-    >在`webpack.config.js`中指定`manifest.json`的内容
-    ```javascript
-    // webpack.config.js
-    const webpack = require('webpack');
-    module.exports = {
-        output: {
-            filename: '[name].[chunkhash].js'
-        },
-        entry: {
-            app: './src/index.js'
-        },
-        plugins: [
-            new webpack.DllReferencePlugin({
-                context: __dirname,
-                // 这里导入 manifest配置内容
-                manifest: require('./manifest.json')
-            })
-        ]
-    };
-    ```
+```javascript
+// webpack.config.dll.js
+const webpack = require('webpack');
+// 这里是第三方依赖库
+const vendors = ['react', 'react-dom'];
+
+module.exports = {
+    mode: 'production',
+    entry: {
+        // 定义程序中打包公共文件的入口文件vendor.js
+        vendor: vendors
+    },
+    output: {
+        filename: '[name].[chunkhash].js',
+        // 这里是使用将 verdor 作为 library 导出，并且指定全局变量名字是[name]_[chunkhash]
+        library: '[name]_[chunkhash]'
+    },
+    plugins: [
+        new webpack.DllPlugin({
+            // 这里是设置 mainifest.json 路径
+            path: 'manifest.json',
+            name: '[name]_[chunkhash]',
+            context: __dirname
+        })
+    ]
+};
+```
+
+3.2、DllReferencePlugin  
+>在`webpack.config.js`中指定`manifest.json`的内容
+
+```javascript
+// webpack.config.js
+const webpack = require('webpack');
+module.exports = {
+    output: {
+        filename: '[name].[chunkhash].js'
+    },
+    entry: {
+        app: './src/index.js'
+    },
+    plugins: [
+        new webpack.DllReferencePlugin({
+            context: __dirname,
+            // 这里导入 manifest配置内容
+            manifest: require('./manifest.json')
+        })
+    ]
+};
+```
 
 ## webpack优化 -- 其他优化
 
-1. IgnorePlugin 
+1、IgnorePlugin
 
 > webpack自带插件，设置`忽略某项引入`
 
@@ -1191,21 +1216,21 @@ module.exports = {
   plugins: [
     //忽略引入 ./locale  在moment中
     new webpack.IgnorePlugin(/\.\/locale/,/moment/)
-  ], 
+  ],
   // 可以手动引入所需的语言包
-  import "moment/locale/zh-cn"; 
-  moment.locale("zh-cn"); 
-``` 
-2. webpack内置优化 
+  import "moment/locale/zh-cn";
+  moment.locale("zh-cn");
+```
+
+2、webpack内置优化
 
 > 1、tree-shaking  
->>使用 import 导入时，在打包时会自动去除没用的代码  
->>require导入是放在一个对象中的，且不会去除代码, 在default中  
+>a、使用 import 导入时，在打包时会自动去除没用的代码  
+>b、require导入是放在一个对象中的，且不会去除代码, 在default中  
+>2、scope-hosting  
+>a、作用域提升，打包时将多余的变量进行转化  
 
->2、scope-hosting   
->>作用域提升，打包时将多余的变量进行转化  
-
-3. @babel/plugin-syntax-dynamic-import  import按需懒加载
+3、@babel/plugin-syntax-dynamic-import  import按需懒加载
 
 >安装：npm i @babel/plugin-syntax-dynamic-import -D  
 >描述：`babel插件，需要写在babel中`
@@ -1244,9 +1269,9 @@ module.exports={
   }
 }
 
-``` 
+```
 
-4. 热更新  HotModuleReplacementPlugin
+4、热更新  HotModuleReplacementPlugin
 
 > webpack自带插件, 需要在本地服务启动 `hot:true`  
 
@@ -1254,10 +1279,10 @@ module.exports={
 module.exports={
   devSever:{
     hot:true
-  }, 
+  },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
-  ], 
+  ],
 }
 //index.js
 import str from "./source"
@@ -1266,7 +1291,8 @@ if(module.hot){
     console.log("文件更新了")
   })
 }
-``` 
+```
 
 ## webpack常用插件，[附表:Plugins](https://github.com/JoannesXie/webpack/blob/master/history/Schedule/Plugins.md)
+
 ## webpack常用loader，[附表:Loaders](https://github.com/JoannesXie/webpack/blob/master/history/Schedule/Loaders.md)
